@@ -9,12 +9,14 @@ import { Layout } from '@components';
 const StyledPostContainer = styled.main`
   max-width: 1000px;
 `;
+
 const StyledPostHeader = styled.header`
   margin-bottom: 50px;
   .tag {
     margin-right: 10px;
   }
 `;
+
 const StyledPostContent = styled.div`
   margin-bottom: 100px;
   h1,
@@ -51,6 +53,9 @@ const StyledPostContent = styled.div`
 `;
 
 const PostTemplate = ({ data, location }) => {
+  // Check if data.markdownRemark exists and is not null
+  if (!data.markdownRemark) return null;
+
   const { frontmatter, html } = data.markdownRemark;
   const { title, date, tags } = frontmatter;
 
@@ -59,10 +64,10 @@ const PostTemplate = ({ data, location }) => {
       <Helmet title={title} />
 
       <StyledPostContainer>
-        <span className="breadcrumb">
+        <div className="breadcrumb">
           <span className="arrow">&larr;</span>
           <Link to="/pensieve">All memories</Link>
-        </span>
+        </div>
 
         <StyledPostHeader>
           <h1 className="medium-heading">{title}</h1>
@@ -91,12 +96,21 @@ const PostTemplate = ({ data, location }) => {
   );
 };
 
-export default PostTemplate;
-
 PostTemplate.propTypes = {
-  data: PropTypes.object,
-  location: PropTypes.object,
+  data: PropTypes.shape({
+    markdownRemark: PropTypes.shape({
+      frontmatter: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        date: PropTypes.string.isRequired,
+        tags: PropTypes.arrayOf(PropTypes.string),
+      }),
+      html: PropTypes.string.isRequired,
+    }),
+  }),
+  location: PropTypes.object.isRequired,
 };
+
+export default PostTemplate;
 
 export const pageQuery = graphql`
   query($path: String!) {
