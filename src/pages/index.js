@@ -1,27 +1,28 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { Layout, Hero, About, Jobs, Featured, Projects, Contact } from '@components';
+import { graphql } from 'gatsby';
+import Layout from '../components/layout';
 
-const StyledMainContainer = styled.main`
-  counter-reset: section;
-`;
-
-const IndexPage = ({ location }) => (
-  <Layout location={location}>
-    <StyledMainContainer className="fillHeight">
-      <Hero />
-      <About />
-      <Jobs />
-      <Featured />
-      <Projects />
-      <Contact />
-    </StyledMainContainer>
+const IndexPage = ({ data }) => (
+  <Layout>
+    <h1>{data.site.siteMetadata.title}</h1>
   </Layout>
 );
 
-IndexPage.propTypes = {
-  location: PropTypes.object.isRequired,
-};
+export const Head = () => (
+  <>
+    <title>Home Page</title>
+    <meta name="description" content="This is the home page" />
+  </>
+);
+
+export const query = graphql`
+  query {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+  }
+`;
 
 export default IndexPage;
